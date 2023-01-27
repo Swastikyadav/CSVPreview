@@ -2,6 +2,7 @@ import React from "react";
 import { UploadOutlined } from "@ant-design/icons";
 import { Input, Upload, Button, Space, Table, Tag } from "antd";
 import styled from "styled-components";
+import Papa from "papaparse";
 
 const BrowseSection = styled.section`
   margin: 40px auto;
@@ -107,7 +108,9 @@ function CsvPreview() {
       const reader = new FileReader();
       reader.readAsText(file);
       reader.onload = (e) => {
-        console.log(e.target.result);
+        // Parse raw csv data into array data structure.
+        const { data, meta } = Papa.parse(e.target.result, { header: true });
+        console.log(data, meta);
       };
 
       // Return false as we don't need to upload the csv file to server.
