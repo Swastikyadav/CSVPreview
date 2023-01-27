@@ -1,8 +1,8 @@
 import { configureStore } from '@reduxjs/toolkit';
-import counterReducer from '../features/counter/counterSlice';
+import csvPreviewReducer from "../features/csv-preview/csvPreviewSlice";
 
 export const store = configureStore({
   reducer: {
-    counter: counterReducer,
+    csvPreview: csvPreviewReducer,
   },
 });
