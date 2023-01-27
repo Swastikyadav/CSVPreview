@@ -1,5 +1,6 @@
 import React from "react";
-import { Input, Button, Space, Table, Tag } from "antd";
+import { UploadOutlined } from "@ant-design/icons";
+import { Input, Upload, Button, Space, Table, Tag } from "antd";
 import styled from "styled-components";
 
 const BrowseSection = styled.section`
@@ -99,6 +100,22 @@ function CsvPreview() {
     },
   ];
 
+  const uploadProps = {
+    name: "file",
+    accept: ".csv",
+    beforeUpload: (file) => {
+      const reader = new FileReader();
+      reader.readAsText(file);
+      reader.onload = (e) => {
+        console.log(e.target.result);
+      };
+
+      // Return false as we don't need to upload the csv file to server.
+      return false;
+    },
+  };
+
+
   return (
     <>
       <h1>CSV TO JSON/CSV</h1>
@@ -109,12 +126,15 @@ function CsvPreview() {
           placeholder="SPLIT,H_rid,Hrid_new,4"
           style={{width: 400}}
         />
-        <Button
-          size="large"
-          type="primary"
-        >
-          Browse CSV Files
-        </Button>
+        <Upload {...uploadProps}>
+          <Button
+            size="large"
+            type="primary"
+            icon={<UploadOutlined />}
+          >
+            Browse CSV Files
+          </Button>
+        </Upload>
       </BrowseSection>
 
       <span>Original CSV Data</span>
