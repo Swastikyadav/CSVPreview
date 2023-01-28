@@ -83,9 +83,11 @@ function CsvPreview() {
               paddingLeft: formulaName === "PADD" ? `${colValue}px` : "",
             }}
           >
-            {formulaName === "SPLIT"
-              ? colObj[columnName].slice(0, colValue)
-              : colObj[columnName]}
+            {
+              formulaName === "SPLIT"
+              ? colObj[columnName]?.slice(0, colValue)
+              : colObj[columnName]
+            }
           </p>
         ),
       };
