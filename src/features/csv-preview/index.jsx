@@ -40,10 +40,24 @@ function CsvPreview() {
   const [formula, setFormula] = useState("");
   const [formulaError, setFormulaError] = useState(false);
 
+  const [formulaName, setFormulaName] = useState("");
+  const [columnName, setColumnName] = useState("");
+  const [newColumnName, setNewColumnName] = useState("");
+  const [colValue, setColValue] = useState("");
+
   useEffect(() => {
-    formula
-    && !(formula.includes("SPLIT") || formula.includes("PADD"))
-    && error();
+    if (
+      formula
+      && !(formula.includes("SPLIT") || formula.includes("PADD"))
+    ) {
+      error();
+    } else {
+      const formulaArray = formula.split(",");
+      setFormulaName(formulaArray[0]);
+      setColumnName(formulaArray[1]);
+      setNewColumnName(formulaArray[2]);
+      setColValue(formulaArray[3]);
+    }
 
     // eslint-disable-next-line
   }, [formulaError]);
@@ -53,6 +67,40 @@ function CsvPreview() {
       title: head,
       dataIndex: head,
       key: head,
+    };
+  });
+
+  const formulaAppliedColumns = [...csvHeads, newColumnName].map((head, idx) => {
+    if (head === newColumnName) {
+      return {
+        title: head,
+        dataIndex: head,
+        key: head,
+        render: (_, colObj) => (
+          <p
+            style={{
+              paddingLeft: formulaName === "PADD" ? `${colValue}px` : "",
+            }}
+          >
+            {formulaName === "SPLIT"
+              ? colObj[columnName].slice(0, colValue)
+              : colObj[columnName]}
+          </p>
+        ),
+      };
+    }
+
+    return {
+      title: head,
+      dataIndex: head,
+      key: head,
+    };
+  });
+
+  const formulaAppliedDataSource = csvData.map((data) => {
+    return {
+      ...data,
+      [newColumnName]: "",
     };
   });
 
@@ -125,13 +173,18 @@ function CsvPreview() {
               // pagination={false}
             />
 
-            {/* <span>Formula Applied CSV Data</span>
-            <Table
-              columns={columns}
-              dataSource={csvData}
-              scroll={{ x: true }}
-              // pagination={false}
-            /> */}
+            {
+              formulaName &&
+              <>
+                <span>Formula Applied CSV Data</span>
+                <Table
+                  columns={formulaAppliedColumns}
+                  dataSource={formulaAppliedDataSource}
+                  scroll={{ x: true }}
+                  // pagination={false}
+                />
+              </>
+            }
           </>
         ) : <Empty description="No CSV File Uploaded!" />
       }
