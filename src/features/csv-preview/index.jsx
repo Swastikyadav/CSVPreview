@@ -49,6 +49,7 @@ function CsvPreview() {
     if (
       formula
       && !(formula.includes("SPLIT") || formula.includes("PADD"))
+      // This is over simplified version of formula format, we can use regex to properly check for formula format.
     ) {
       error();
     } else {
