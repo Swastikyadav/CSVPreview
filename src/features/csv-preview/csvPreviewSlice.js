@@ -12,7 +12,7 @@ export const csvPreviewSlice = createSlice({
   reducers: {
     setCSVData: (state, action) => {
       state.csvData = action.payload.data;
-      state.csvHeads = action.payload.fields
+      state.csvHeads = action.payload.fields;
     },
     clearCSVPreview: (state) => {
       state.csvData = [];
@@ -21,7 +21,10 @@ export const csvPreviewSlice = createSlice({
   }
 });
 
-export const { setCSVData, clearCSVPreview } = csvPreviewSlice.actions;
+export const {
+  setCSVData,
+  clearCSVPreview,
+} = csvPreviewSlice.actions;
 
 // Selector Functions
 export const selectCSVData = (state) => state.csvPreview.csvData;

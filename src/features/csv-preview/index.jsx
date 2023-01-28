@@ -1,6 +1,6 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { UploadOutlined } from "@ant-design/icons";
-import { Input, Upload, Button, Table, Empty } from "antd";
+import { Input, Upload, Button, Table, Empty, message } from "antd";
 import styled from "styled-components";
 import Papa from "papaparse";
 import { useSelector, useDispatch } from 'react-redux';
@@ -8,7 +8,7 @@ import {
   setCSVData,
   selectCSVData,
   selectCSVHeads,
-  clearCSVPreview
+  clearCSVPreview,
 } from "./csvPreviewSlice";
 
 const BrowseSection = styled.section`
@@ -34,6 +34,19 @@ function CsvPreview() {
   const csvData = useSelector(selectCSVData);
   const csvHeads = useSelector(selectCSVHeads);
   const dispatch = useDispatch();
+
+  const [messageApi, errorContextHolder] = message.useMessage();
+
+  const [formula, setFormula] = useState("");
+  const [formulaError, setFormulaError] = useState(false);
+
+  useEffect(() => {
+    formula
+    && !(formula.includes("SPLIT") || formula.includes("PADD"))
+    && error();
+
+    // eslint-disable-next-line
+  }, [formulaError]);
 
   const columns = csvHeads.map((head) => {
     return {
@@ -61,13 +74,24 @@ function CsvPreview() {
       return false;
     },
     onRemove: () => {
+      setFormula("");
+      setFormulaError(false);
       dispatch(clearCSVPreview());
     }
   };
 
+  const error = () => {
+    messageApi.open({
+      type: 'error',
+      content: 'Please enter valid formula format!',
+    });
+  };
 
   return (
     <>
+      {/* Floating error message */}
+      {errorContextHolder}
+
       <h1>CSV TO JSON/CSV</h1>
 
       <BrowseSection>
@@ -75,6 +99,9 @@ function CsvPreview() {
           size="large"
           placeholder="SPLIT,H_rid,Hrid_new,4"
           disabled={csvData.length ? false : true}
+          value={formula}
+          onChange={(e) => setFormula(e.target.value)}
+          onBlur={(e) => setFormulaError((prevState) => !prevState)}
         />
         <Upload {...uploadProps}>
           <Button
